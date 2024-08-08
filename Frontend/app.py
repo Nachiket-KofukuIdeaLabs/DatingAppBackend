@@ -44,11 +44,22 @@ if "random_user" in st.session_state:
                 nearest_users = response.json()
                 st.write(f"Found {len(nearest_users)} nearest users.")
                 if nearest_users:
+                    # Create the map centered on the random user's location
                     m = folium.Map(location=[user["latitude"], user["longitude"]], zoom_start=10)
-                    folium.Marker([user["latitude"], user["longitude"]], tooltip="Random User", icon=folium.Icon(color="red")).add_to(m)
+                    # Add marker for the random user
+                    folium.Marker(
+                        [user["latitude"], user["longitude"]],
+                        tooltip="Random User",
+                        icon=folium.Icon(color="red")
+                    ).add_to(m)
+                    # Add markers for the nearest users
                     for u in nearest_users:
-                        folium.Marker([u["latitude"], u["longitude"]], tooltip=f"{u['first_name']} {u['last_name']}").add_to(m)
-                    st_folium(m, width=700, height=500)
+                        folium.Marker(
+                            [u["latitude"], u["longitude"]],
+                            tooltip=f"{u['first_name']} {u['last_name']}"
+                        ).add_to(m)
+                    # Render the map
+                    st_folium(m, width=700, height=500, returned_objects=['map'])
                 else:
                     st.write("No nearest users found.")
             else:
